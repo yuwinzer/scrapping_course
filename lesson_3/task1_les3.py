@@ -1,21 +1,16 @@
-# 1. Вариант 1
-# Необходимо собрать информацию о вакансиях на вводимую должность (используем input или через аргументы
-# получаем должность) с сайтов HH(обязательно) и/или Superjob(по желанию). Приложение должно анализировать
-# несколько страниц сайта (также вводим через input или аргументы). Получившийся список должен содержать
-# в себе минимум:
-# Наименование вакансии.
-# Предлагаемую зарплату (разносим в три поля: минимальная и максимальная и валюта. цифры преобразуем к цифрам).
-# Ссылку на саму вакансию.
-# Сайт, откуда собрана вакансия.
-# По желанию можно добавить ещё параметры вакансии (например, работодателя и расположение).
-# Структура должна быть одинаковая для вакансий с обоих сайтов. Общий результат можно вывести с помощью
-# dataFrame через pandas. Сохраните в json либо csv.
-
+from pprint import pprint
+from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError as dke
 import requests
 import json
 from bs4 import BeautifulSoup as bs
-from pprint import pprint
 
+# create mongo database vacancies with ukr_headhunter collection
+client = MongoClient('127.0.0.1', 27017)
+db = client['vacancies']
+ukr_headhunter = db.ukr_headhunter     # persons - коллекция, ви - база данных
+
+# ukr_headhunter.delete_many({})  # очистка перед наполнением
 
 url = 'https://grc.ua/search/vacancy'
 params = {'text': 'Django',
@@ -65,17 +60,25 @@ while True:
             vacancy_data['salary_max'] = None
             vacancy_data['salary_currency'] = None
 
+        vacancy_data['_id'] = int(vacancy_link[28:36])
         vacancy_data['name'] = vacancy_name
         vacancy_data['link'] = vacancy_link
         vacancy_data['website'] = 'grc.ua'
 
         vacancies.append(vacancy_data)
+
+        try:
+            ukr_headhunter.insert_one(vacancy_data)
+        except dke:
+            pass
     params['page'] += 1
 
-pprint(vacancies)
+# pprint(vacancies)
+
+# with open('task1_les3.json', 'w') as outfile:
+#     json.dump(vacancies, outfile, ensure_ascii=False) # с json есть ошибки, надо разобраться почему
+
+for doc in ukr_headhunter.find({}):
+    pprint(doc)
+
 pprint(len(vacancies))  # 560 vacancies at latest check
-
-with open('2l_1t_data.json', 'w') as outfile:
-    json.dump(vacancies, outfile, ensure_ascii=False)
-
-
