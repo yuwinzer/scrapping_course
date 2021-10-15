@@ -16,8 +16,13 @@ chrome_options = Options()
 driver = webdriver.Chrome(executable_path='./chromedriver.exe', options=chrome_options)
 driver.get('https://www.mvideo.ru/')
 time.sleep(1)
-elem_modal = driver.find_element(By.XPATH, "//mvid-icon[contains(@class, 'modal-layout__close')]/*[name()='svg']/*[name()='use']")
-elem_modal.click()
+try:
+    elem_modal = driver.find_element(By.XPATH, "//mvid-icon[contains(@class, "
+                                               "'modal-layout__close')]/*[name()='svg']/*[name()='use']")
+    elem_modal.click()
+except se.NoSuchElementException:
+    pass
+
 
 y_pos = 1000
 for _ in range(3):
