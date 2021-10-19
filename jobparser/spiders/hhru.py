@@ -1,3 +1,4 @@
+
 import scrapy
 from scrapy.http import HtmlResponse
 from jobparser.items import JobparserItem
@@ -19,7 +20,7 @@ class HhruSpider(scrapy.Spider):
 
     def vacancy_parse(self, response: HtmlResponse):
         name = response.xpath("//h1[@data-qa='vacancy-title']/text()").get()
-        salary = response.xpath("//p[@class='vacancy-salary']/span/text()").getall()
+        salary = response.xpath("//span[@data-qa = 'vacancy-salary-compensation-type-net']/text()").getall()
         link = response.xpath("//link[@rel = 'canonical']/@href").get()
         item = JobparserItem(name=name, salary=salary, link=link)
         yield item
