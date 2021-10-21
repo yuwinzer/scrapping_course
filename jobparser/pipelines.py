@@ -25,32 +25,22 @@ class JobparserPipeline:
         if spider.name == 'hhru':
             new_item = {}
             # print(item)  # debug
-            item['salary'] = self.process_salary_hhru(item['salary'])
-            new_item['name'] = item['name']
-            new_item['salary_min'] = item['salary'][0]
-            new_item['salary_max'] = item['salary'][1]
-            new_item['currency'] = item['salary'][2]
-            new_item['link'] = item['link']
+            item['salary_min'], item['salary_max'], item['currency'] = self.process_salary_hhru(item['salary'])
+            del item['salary']
             # print(new_item)  # debug
             collection = self.mongo_base[spider.name]
-            collection.insert_one(new_item)
+            collection.insert_one(item)
             return item
 
         if spider.name == 'sjru':
             new_item = {}
             # print(item)  # debug
-            item['salary'] = self.process_salary_sjru(item['salary'])
-            new_item['name'] = item['name']
-            new_item['salary_min'] = item['salary'][0]
-            new_item['salary_max'] = item['salary'][1]
-            new_item['currency'] = item['salary'][2]
-            new_item['link'] = item['link']
+            item['salary_min'], item['salary_max'], item['currency'] = self.process_salary_sjru(item['salary'])
+            del item['salary']
             # print(new_item)  # debug
             collection = self.mongo_base[spider.name]
-            collection.insert_one(new_item)
+            collection.insert_one(item)
             return item
-
-
 
     def process_salary_sjru(self, salary):
         salary_min = None
