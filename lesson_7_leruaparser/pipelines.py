@@ -8,11 +8,19 @@
 import scrapy
 from itemadapter import ItemAdapter
 from scrapy.pipelines.images import ImagesPipeline
+from pymongo import MongoClient
 
 class LeruaparserPipeline:
+
+    def __init__(self):
+        client = MongoClient('localhost', 27017)
+        self.mongo_base = client.leroymerlin
+
     def process_item(self, item, spider):
-        print()
+        collection = self.mongo_base[spider.name]
+        collection.insert_one(item)
         return item
+
 
 
 class LeruaPhotosPipeline(ImagesPipeline):
