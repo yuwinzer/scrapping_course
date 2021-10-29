@@ -43,37 +43,47 @@ class InstaSpider(scrapy.Spider):
     def user_parse(self, response: HtmlResponse, username):
         user_id = self.fetch_user_id(response.text, username)
 
-        variables = {'id': user_id, 'first': 12}
+        variables = {'count': 12}
         url_posts = f'https://i.instagram.com/api/v1/friendships/{user_id}/followers/'
 
         yield response.follow(url_posts,
                               callback=self.user_posts_parse,
+                              headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0',
+                                       'X-IG-App-ID':'936619743392459'
+                                       },
                               cb_kwargs={'username': username,
                                          'user_id': user_id,
-                                         'variables': deepcopy(variables)}
+                                         'variables': deepcopy(variables)
+                                         }
                               )
 
 
     def user_posts_parse(self, response: HtmlResponse, username, user_id, variables):
         j_data = response.json()
-        page_info = j_data.get('data').get('user').get('edge_owner_to_timeline_media').get('page_info')
-        if page_info.get('has_next_page'):
-            variables['after'] = page_info.get('end_cursor')
-            url_posts = f'{self.graphql_url}query_hash={self.posts_hash}&{urlencode(variables)}'
+        # print(len(j_data['users']))
+        if j_data.get('next_max_id'):
+            variables['max_id'] = j_data.get('next_max_id')
+            variables['search_surface'] = 'follow_list_page'
+            url_posts = f'https://i.instagram.com/api/v1/friendships/{user_id}/followers/?{urlencode(variables)}'
+            # print(url_posts)
             yield response.follow(url_posts,
                                   callback=self.user_posts_parse,
+                                  headers={
+                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0',
+                                      'X-IG-App-ID': '936619743392459'
+                                      },
                                   cb_kwargs={'username': username,
                                              'user_id': user_id,
                                              'variables': deepcopy(variables)}
                                   )
-            posts = j_data.get('data').get('user').get('edge_owner_to_timeline_media').get('edges')
-            for post in posts:
+            followers = j_data.get('users')
+            for follower in followers:
                 item = InstaparserItem(
                     user_id=user_id,
                     username=username,
-                    photo=post.get('node').get('display_url'),
-                    likes=post.get('node').get('edge_media_preview_like').get('count'),
-                    post_data=post.get('node')
+                    follower_username=follower['username'],
+                    full_name=follower['full_name'],
+                    is_private=follower['is_private']
                 )
                 yield item
 
