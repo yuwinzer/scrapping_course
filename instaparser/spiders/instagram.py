@@ -12,11 +12,10 @@ class InstaSpider(scrapy.Spider):
     allowed_domains = ['instagram.com']
     start_urls = ['https://www.instagram.com/']
     inst_login_link = 'https://www.instagram.com/accounts/login/ajax/'
-    inst_login = 'Onliskill_udm'   # Qw123456789
-    inst_pwd = '#PWD_INSTAGRAM_BROWSER:10:1634577477:AWdQAK0AEOF+wFwWVYjoEuu8uCHn+Pabck9vUxQlFS3/o3VdiZCGuEm4HaF+MLP9EwSytUXe+VNGZWVqv/Pz+z14vr8gT4dClBa6OPYXzPbHCHcU0fUqrO731Bcf4OCxjIcxB4lurkTpWrZPz+Ir'
-    user_for_parse = 'ai_machine_learning'
-    graphql_url = 'https://www.instagram.com/graphql/query/?'
-    posts_hash = '8c2a529969ee035a5063f2fc8602a0fd'
+    inst_login = 'procentiro'
+    inst_pwd = '#PWD_INSTAGRAM_BROWSER:10:1635502056:AUlQAAHDTfzNSMrt/OfzNlObPAxG7FdWJneRgjBRn9rIyRNGJ97ZS5AbMamTFFwAo2vKDNe29vhzCOhvi/uEXv8mkSDeJ5E/hMNY1ow8XzmpeTEfn4LJ3+Z1NFTwOAz2tTn3oEzttkHUZ5iYhzT3K6ABYQ=='
+    user_for_parse = 'nina.k_chimera'
+
 
     def parse(self, response: HtmlResponse):
         csrf = self.fetch_csrf_token(response.text)
@@ -25,11 +24,14 @@ class InstaSpider(scrapy.Spider):
             method='POST',
             callback=self.login,
             formdata={'username': self.inst_login,
-                      'enc_password': self.inst_pwd},
+                      'enc_password': self.inst_pwd,
+                      'X-IG-App-ID': '936619743392459',
+                      'X-IG-WWW-Claim': 'hmac.AR08mGMWEKvDF_NFMZjpWTKY5hQERjPKiLqJSZR48Javh2lM'},
             headers={'x-csrftoken': csrf}
         )
 
     def login(self, response: HtmlResponse):
+        print()
         j_data = response.json()
         if j_data['authenticated']:
             yield response.follow(
@@ -42,7 +44,7 @@ class InstaSpider(scrapy.Spider):
         user_id = self.fetch_user_id(response.text, username)
 
         variables = {'id': user_id, 'first': 12}
-        url_posts = f'{self.graphql_url}query_hash={self.posts_hash}&{urlencode(variables)}'
+        url_posts = f'https://i.instagram.com/api/v1/friendships/{user_id}/followers/'
 
         yield response.follow(url_posts,
                               callback=self.user_posts_parse,
@@ -74,13 +76,6 @@ class InstaSpider(scrapy.Spider):
                     post_data=post.get('node')
                 )
                 yield item
-
-
-
-
-
-
-
 
 
     def fetch_csrf_token(self, text):
