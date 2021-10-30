@@ -1,7 +1,7 @@
 from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 
-from instaparser.spiders.instagram import InstaSpiderFollowers, InstaSpiderFollowings
+from instaparser.spiders.instagram import InstaSpider
 from instaparser import settings
 
 if __name__ == '__main__':
@@ -9,7 +9,6 @@ if __name__ == '__main__':
     crawler_settings.setmodule(settings)
 
     process = CrawlerProcess(settings=crawler_settings)
-    process.crawl(InstaSpiderFollowers)
-    # process.crawl(InstaSpiderFollowings)
+    process.crawl(InstaSpider)
 
     process.start()
