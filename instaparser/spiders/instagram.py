@@ -15,10 +15,8 @@ class InstaSpider(scrapy.Spider):
     allowed_domains = ['instagram.com']
     start_urls = ['https://www.instagram.com/']
     inst_login_link = 'https://www.instagram.com/accounts/login/ajax/'
-    # inst_login = 'procentiro'
-    # inst_pwd = '#PWD_INSTAGRAM_BROWSER:10:1635581843:AaZQAHEopegV7Bm9Y+QVCPt/vYfiZG5HqgPwj1jjEl9fyEo3ffhfJUh+6ezzdqCUOlveIKIdwqG0hdZ14GCCl4X2SBEws9NddgfKBQVB01LFG9SngsGiTiszXKTZ6gr+J5H4QxdhEStok8q7FIVF5JYigw=='
-    inst_login = 'Onliskill_udm'  # Qw123456789
-    inst_pwd = '#PWD_INSTAGRAM_BROWSER:10:1634577477:AWdQAK0AEOF+wFwWVYjoEuu8uCHn+Pabck9vUxQlFS3/o3VdiZCGuEm4HaF+MLP9EwSytUXe+VNGZWVqv/Pz+z14vr8gT4dClBa6OPYXzPbHCHcU0fUqrO731Bcf4OCxjIcxB4lurkTpWrZPz+Ir'
+    inst_login = 'xxx'  # Qw123456789
+    inst_pwd = '#PWD_INSTAGRAM_BROWSER:xxx'
     users_for_parse = ('nina.k_chimera', 'juliagartung')
     response_count = 0
 
