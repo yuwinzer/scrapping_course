@@ -5,6 +5,8 @@ from copy import deepcopy
 from urllib.parse import urlencode
 from scrapy.http import HtmlResponse
 from instaparser.items import InstaparserItem
+import time
+
 
 
 
@@ -17,7 +19,7 @@ class InstaSpider(scrapy.Spider):
     # inst_pwd = '#PWD_INSTAGRAM_BROWSER:10:1635581843:AaZQAHEopegV7Bm9Y+QVCPt/vYfiZG5HqgPwj1jjEl9fyEo3ffhfJUh+6ezzdqCUOlveIKIdwqG0hdZ14GCCl4X2SBEws9NddgfKBQVB01LFG9SngsGiTiszXKTZ6gr+J5H4QxdhEStok8q7FIVF5JYigw=='
     inst_login = 'Onliskill_udm'  # Qw123456789
     inst_pwd = '#PWD_INSTAGRAM_BROWSER:10:1634577477:AWdQAK0AEOF+wFwWVYjoEuu8uCHn+Pabck9vUxQlFS3/o3VdiZCGuEm4HaF+MLP9EwSytUXe+VNGZWVqv/Pz+z14vr8gT4dClBa6OPYXzPbHCHcU0fUqrO731Bcf4OCxjIcxB4lurkTpWrZPz+Ir'
-    users_for_parse = ('nina.k_chimera', 'popovysisters', 'tender_creation')
+    users_for_parse = ('nina.k_chimera', 'juliagartung')
     response_count = 0
 
     def parse(self, response: HtmlResponse):
@@ -178,6 +180,10 @@ class InstaSpider(scrapy.Spider):
         )
         # pprint(item)
         print(f'Выполнен {self.response_count}й запрос к instagram')
+        # if (self.response_count % 10) == 0:
+        #     timesleep = 60*10 # seconds
+        #     print(f'Засыпаем на {round(timesleep/60)} минут')
+        #     time.sleep(3)
         return item
 
 

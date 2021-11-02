@@ -43,14 +43,17 @@ class InstaparserPipeline:
         # But need users with mentioning "doll" and "bjd" hashtags his posts descriptions
         if item['posts_count'] > 12 and item['followers_count'] > 30:
             print(f"Вроде проходит. P:{item['posts_count']}, F-r: {item['followers_count']}, F-g:{item['following_count']}")
-            str_text = (' '.join(item['posts_text'])).lower()
-            if any(hashtag in str_text for hashtag in hashtags):
+            # contacenation 3 items in 1 list
+            all_text_from_user_page = [*item['posts_text'], item['biography'], item['follower_or_following']]
+            # list to string and lowercase
+            all_text_from_user_page = ' '.join(all_text_from_user_page).lower()
+            if any(hashtag in all_text_from_user_page for hashtag in hashtags):
             # if 'doll' in str_text or 'bjd' in str_text or 'кукол' in str_text or 'кукл' in str_text or 'furniture' in str_text:
-                print(f"И есть нужные хэштеги в подписях фоток!")
+                print(f"И есть нужные хэштеги в тексте")
                 del item['posts_text']  # we don't need them anymore
                 return True
             else:
-                print(f"но нет нужных хэштегов")
+                print(f"но нет нужных хэштегов, отсеян")
                 return False
         else:
             print(f"Отсеян. P:{item['posts_count']}, F-r: {item['followers_count']}, F-g:{item['following_count']}")
