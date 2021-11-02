@@ -38,13 +38,16 @@ class InstaparserPipeline:
         return item
 
     def item_is_good_enough(self, item):
+        hashtags = ('doll','bjd','кукол','кукл','furniture')
         # here we check a "quality" of parsed user. If he has posts and followers count big enough he is good.
         # But need users with mentioning "doll" and "bjd" hashtags his posts descriptions
         if item['posts_count'] > 12 and item['followers_count'] > 30:
-            print(f"Проходит. P:{item['posts_count']}, F-r: {item['followers_count']}, F-g:{item['following_count']}")
-            str_text = ' '.join(item['posts_text'])
-            if 'doll' in str_text or 'bjd' in str_text:
-                print(f"есть doll или bjd в текстах!")
+            print(f"Вроде проходит. P:{item['posts_count']}, F-r: {item['followers_count']}, F-g:{item['following_count']}")
+            str_text = (' '.join(item['posts_text'])).lower()
+            if any(hashtag in str_text for hashtag in hashtags):
+            # if 'doll' in str_text or 'bjd' in str_text or 'кукол' in str_text or 'кукл' in str_text or 'furniture' in str_text:
+                print(f"И есть нужные хэштеги в подписях фоток!")
+                del item['posts_text']  # we don't need them anymore
                 return True
             else:
                 print(f"но нет нужных хэштегов")
